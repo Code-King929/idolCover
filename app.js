@@ -174,11 +174,12 @@
   }
 
   // ---------- 本地预置：真实歌曲文件 ----------
+  // 使用 jsDelivr CDN 加速音频加载（国内访问 GitHub Pages 较慢）
   const PRESETS = [
-    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "audio/excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
-    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "audio/beyond_the_sea.mp3", hint: "男中音独唱，建议女声降调" },
-    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "audio/tang_people.mp3", hint: "古风女声，建议男声升调" },
-    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "audio/lucky_star.mp3", hint: "清新女声，建议男声升 4-5 半音" },
+    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "https://cdn.jsdelivr.net/gh/code-king929/idolCover@main/audio/excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
+    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "https://cdn.jsdelivr.net/gh/code-king929/idolCover@main/audio/beyond_the_sea.mp3", hint: "男中音独唱，建议女声降调" },
+    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "https://cdn.jsdelivr.net/gh/code-king929/idolCover@main/audio/tang_people.mp3", hint: "古风女声，建议男声升调" },
+    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "https://cdn.jsdelivr.net/gh/code-king929/idolCover@main/audio/lucky_star.mp3", hint: "清新女声，建议男声升 4-5 半音" },
   ];
 
   // ---------- 全局加载遮罩 ----------
@@ -248,8 +249,23 @@
           updateLoading("正在下载音频文件", p.title, 30);
           await new Promise(r => setTimeout(r, 200));
           
-          const response = await fetch(p.file);
-          if (!response.ok) throw new Error("加载失败");
+          // 添加 30 秒超时控制，避免一直加载看不到原因
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000);
+          
+          let response;
+          try {
+            response = await fetch(p.file, { signal: controller.signal });
+          } catch (fetchErr) {
+            clearTimeout(timeoutId);
+            if (fetchErr.name === 'AbortError') {
+              throw new Error("下载超时（30秒）— 国内访问 GitHub Pages 较慢，建议使用 jsDelivr CDN 加速");
+            }
+            throw new Error("网络请求失败：" + fetchErr.message);
+          }
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) throw new Error("加载失败 (HTTP " + response.status + ")");
           
           updateLoading("正在读取音频数据", p.title, 50);
           await new Promise(r => setTimeout(r, 200));
