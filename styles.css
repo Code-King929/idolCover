@@ -3,20 +3,20 @@
    风格：清爽蓝白 / 玻璃拟态 / 简洁清新
    ============================================================ */
 
-/* 全局加载遮罩 */
+/* 全局加载遮罩 - 可爱生动版 */
 .global-loading {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(8, 47, 73, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(56, 189, 248, 0.1));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 .global-loading.active {
   opacity: 1;
@@ -26,86 +26,166 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 32px 48px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3);
-  min-width: 320px;
+  gap: 20px;
+  padding: 40px 50px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 255, 0.95));
+  border-radius: 24px;
+  box-shadow: 0 25px 80px -15px rgba(14, 165, 233, 0.4), 0 0 0 1px rgba(14, 165, 233, 0.1);
+  min-width: 360px;
   max-width: 90vw;
-  transform: scale(0.9);
-  transition: transform 0.3s ease;
+  transform: scale(0.85) translateY(20px);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .global-loading.active .loading-content {
-  transform: scale(1);
+  transform: scale(1) translateY(0);
 }
-.loading-spinner {
+
+/* 可爱音符动画容器 */
+.loading-music-icon {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.spinner-ring {
+.loading-mic {
+  font-size: 36px;
+  color: #0ea5e9;
+  animation: mic-bounce 1s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+.loading-notes {
   position: absolute;
-  top: 0; left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  border-top-color: #0ea5e9;
-  animation: spin 1.2s linear infinite;
 }
-.spinner-ring:nth-child(2) {
-  width: 80%;
-  height: 80%;
-  top: 10%; left: 10%;
-  border-top-color: #38bdf8;
-  animation-duration: 1.6s;
-  animation-direction: reverse;
+.loading-note {
+  position: absolute;
+  font-size: 18px;
+  opacity: 0.8;
+  animation: note-float 2s ease-in-out infinite;
 }
-.spinner-ring:nth-child(3) {
-  width: 60%;
-  height: 60%;
-  top: 20%; left: 20%;
-  border-top-color: #7dd3fc;
-  animation-duration: 2s;
+.loading-note:nth-child(1) {
+  top: 0; left: 10%;
+  color: #f472b6;
+  animation-delay: 0s;
 }
+.loading-note:nth-child(2) {
+  top: 20%; right: 5%;
+  color: #a78bfa;
+  animation-delay: 0.3s;
+}
+.loading-note:nth-child(3) {
+  bottom: 10%; left: 5%;
+  color: #34d399;
+  animation-delay: 0.6s;
+}
+.loading-note:nth-child(4) {
+  bottom: 25%; right: 15%;
+  color: #fbbf24;
+  animation-delay: 0.9s;
+}
+.loading-note:nth-child(5) {
+  top: 40%; left: 0;
+  color: #38bdf8;
+  animation-delay: 1.2s;
+}
+
+@keyframes mic-bounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
+}
+@keyframes note-float {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-12px) scale(1.2); opacity: 1; }
+}
+
+/* 加载文字 - 可爱风格 */
 .loading-text {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: #0c4a6e;
   text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.loading-text .loading-emoji {
+  animation: emoji-wiggle 0.8s ease-in-out infinite;
+}
+@keyframes emoji-wiggle {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
 .loading-subtext {
-  font-size: 13px;
+  font-size: 14px;
   color: #64748b;
   text-align: center;
-  min-height: 18px;
-  max-width: 280px;
+  min-height: 20px;
+  max-width: 300px;
   word-break: break-all;
+  line-height: 1.5;
 }
+
+/* 进度条 - 彩虹渐变 */
 .loading-progress {
   width: 100%;
-  height: 4px;
-  background: rgba(14, 165, 233, 0.1);
-  border-radius: 2px;
+  height: 8px;
+  background: rgba(14, 165, 233, 0.08);
+  border-radius: 8px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 8px;
+  position: relative;
 }
 .loading-bar {
   height: 100%;
-  background: linear-gradient(90deg, #0ea5e9, #38bdf8, #7dd3fc);
-  background-size: 200% 100%;
-  border-radius: 2px;
+  background: linear-gradient(90deg, #f472b6, #a78bfa, #38bdf8, #34d399, #fbbf24, #f472b6);
+  background-size: 300% 100%;
+  border-radius: 8px;
   width: 0%;
-  transition: width 0.4s ease;
-  animation: shimmer 2s linear infinite;
+  transition: width 0.5s ease;
+  animation: rainbow-flow 3s linear infinite;
+  position: relative;
 }
-@keyframes shimmer {
+.loading-bar::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.5);
+  animation: dot-pulse 1s ease-in-out infinite;
+}
+@keyframes rainbow-flow {
   0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
+  100% { background-position: 300% 0%; }
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes dot-pulse {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.3); }
+}
+
+/* 加载提示小贴士 */
+.loading-tip {
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 8px 16px;
+  background: rgba(14, 165, 233, 0.05);
+  border-radius: 12px;
+  margin-top: 4px;
+  animation: tip-fade 3s ease-in-out infinite;
+}
+@keyframes tip-fade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 /* 加载时禁用所有交互 */

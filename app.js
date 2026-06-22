@@ -182,7 +182,24 @@
     { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "audio/lucky_star.mp3", hint: "清新女声，建议男声升 4-5 半音" },
   ];
 
-  // ---------- 全局加载遮罩 ----------
+  // ---------- 全局加载遮罩 - 可爱生动版 ----------
+  // 有趣的加载提示语
+  const LOADING_TIPS = [
+    "🎵 正在召唤音乐精灵...",
+    "🎤 麦克风正在热身中...",
+    "✨ 为你的歌声准备舞台...",
+    "🌟 调音师正在调试设备...",
+    "💫 音乐魔法正在施展...",
+    "🎶 音符们正在排队入场...",
+    "🎹 伴奏正在化妆打扮...",
+    "🌈 彩虹音效正在加载...",
+    "🎵 请稍等，音乐马上开始...",
+    "🎤 准备好你的嗓子了吗？"
+  ];
+
+  let currentTipIndex = 0;
+  let tipInterval = null;
+
   function showLoading(text, subtext) {
     let overlay = $("globalLoading");
     if (!overlay) {
@@ -190,29 +207,69 @@
       overlay.id = "globalLoading";
       overlay.className = "global-loading";
       overlay.innerHTML = '<div class="loading-content">' +
-        '<div class="loading-spinner">' +
-          '<div class="spinner-ring"></div>' +
-          '<div class="spinner-ring"></div>' +
-          '<div class="spinner-ring"></div>' +
+        '<div class="loading-music-icon">' +
+          '<div class="loading-notes">' +
+            '<span class="loading-note">♪</span>' +
+            '<span class="loading-note">♫</span>' +
+            '<span class="loading-note">♬</span>' +
+            '<span class="loading-note">♩</span>' +
+            '<span class="loading-note">♪</span>' +
+          '</div>' +
+          '<span class="loading-mic">🎤</span>' +
         '</div>' +
-        '<div class="loading-text" id="loadingText">加载中…</div>' +
+        '<div class="loading-text" id="loadingText"><span class="loading-emoji">✨</span> 加载中…</div>' +
         '<div class="loading-subtext" id="loadingSubtext"></div>' +
         '<div class="loading-progress"><div class="loading-bar" id="loadingBar"></div></div>' +
+        '<div class="loading-tip" id="loadingTip">💡 小贴士：戴上耳机体验更佳哦~</div>' +
       '</div>';
       document.body.appendChild(overlay);
     }
-    $("loadingText").textContent = text || "加载中…";
-    $("loadingSubtext").textContent = subtext || "";
+    
+    // 更新文字
+    const textEl = $("loadingText");
+    if (textEl) {
+      textEl.innerHTML = '<span class="loading-emoji">✨</span> ' + (text || "加载中…");
+    }
+    
+    const subtextEl = $("loadingSubtext");
+    if (subtextEl) {
+      subtextEl.textContent = subtext || "";
+    }
+    
     $("loadingBar").style.width = "0%";
+    
+    // 启动提示语轮播
+    if (tipInterval) clearInterval(tipInterval);
+    currentTipIndex = Math.floor(Math.random() * LOADING_TIPS.length);
+    updateTip();
+    tipInterval = setInterval(updateTip, 3000);
+    
     overlay.classList.add("active");
     document.body.classList.add("loading-active");
+  }
+
+  function updateTip() {
+    const tipEl = $("loadingTip");
+    if (tipEl) {
+      tipEl.textContent = LOADING_TIPS[currentTipIndex];
+      currentTipIndex = (currentTipIndex + 1) % LOADING_TIPS.length;
+    }
   }
 
   function updateLoading(text, subtext, progress) {
     const overlay = $("globalLoading");
     if (!overlay) return;
-    if (text) $("loadingText").textContent = text;
-    if (subtext !== undefined) $("loadingSubtext").textContent = subtext;
+    
+    const textEl = $("loadingText");
+    if (textEl && text) {
+      textEl.innerHTML = '<span class="loading-emoji">✨</span> ' + text;
+    }
+    
+    const subtextEl = $("loadingSubtext");
+    if (subtextEl && subtext !== undefined) {
+      subtextEl.textContent = subtext;
+    }
+    
     if (progress !== undefined) $("loadingBar").style.width = progress + "%";
   }
 
@@ -220,6 +277,12 @@
     const overlay = $("globalLoading");
     if (overlay) overlay.classList.remove("active");
     document.body.classList.remove("loading-active");
+    
+    // 停止提示语轮播
+    if (tipInterval) {
+      clearInterval(tipInterval);
+      tipInterval = null;
+    }
   }
 
   (function initPresets() {
