@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>偶像新歌翻唱助手 · IdolCover Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/ort.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+</head>
+<body>
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <div class="logo-orb">
+          <span class="mic-glyph">♪</span>
+        </div>
+        <div>
+          <h1>偶像新歌翻唱助手</h1>
+          <p class="subtitle">IdolCover Studio · 找伴奏 · AI智能降调 · 在线录歌 · 音准分析 · 粉丝合唱，一站式完成</p>
+        </div>
+      </div>
+      <div class="tag-filter">
+        <button class="tag-btn active" data-feature="all">
+          全部功能
+        </button>
+        <button class="tag-btn" data-feature="cover">
+          <span class="tag-active-dot"></span>🎤 一键翻唱
+        </button>
+        <button class="tag-btn" data-feature="pitch">
+          <span class="tag-active-dot"></span>🎧 AI 智能降调
+        </button>
+        <button class="tag-btn" data-feature="chorus">
+          <span class="tag-active-dot"></span>👥 合唱拼接
+        </button>
+        <button class="tag-btn" data-feature="analysis">
+          <span class="tag-active-dot"></span>🎯 音准分析
+        </button>
+      </div>
+
+      <!-- 功能展示卡片区 -->
+      <div class="feature-cards" id="featureCards">
+        <div class="feature-card" data-card="cover">
+          <div class="feature-icon"><i data-lucide="mic-2"></i></div>
+          <div class="feature-body">
+            <h3>🎤 一键翻唱</h3>
+            <p>上传偶像新歌 → AI 实时分离人声与伴奏 → 跟随伴奏录音 → 自动混音导出。全程无需切换 App，3 分钟完成可分享作品。</p>
+            <ul>
+              <li>支持 MP3 / WAV / OGG 上传</li>
+              <li>AI 人声分离（谱减法 + 中置通道提取）</li>
+              <li>浏览器原生录音，无需安装插件</li>
+            </ul>
+          </div>
+        </div>
+        <div class="feature-card" data-card="pitch">
+          <div class="feature-icon"><i data-lucide="sliders-horizontal"></i></div>
+          <div class="feature-body">
+            <h3>🎧 AI 智能降调</h3>
+            <p>AI 分析你的音域与原唱音域，自动推荐最佳降调幅度。女生唱男团歌降 4-6 半音，男生唱女团歌升 4-5 半音，避免破音。</p>
+            <ul>
+              <li>16 种音域组合 → AI 推荐最佳半音数</li>
+              <li>±12 半音手动微调，实时变调预览</li>
+              <li>粒状变调算法（Phase Vocoder），保持音质</li>
+            </ul>
+          </div>
+        </div>
+        <div class="feature-card" data-card="chorus">
+          <div class="feature-icon"><i data-lucide="users-2"></i></div>
+          <div class="feature-body">
+            <h3>👥 合唱拼接</h3>
+            <p>偶像生日应援、出道纪念 —— 小团体合唱不再难。先录者生成参考音轨，后续成员跟随参考音轨录制，系统自动叠加多轨混音。</p>
+            <ul>
+              <li>支持多人多轨录制（无上限）</li>
+              <li>参考音轨模式，保证节奏对齐</li>
+              <li>实时混音预览，可单独重录任意轨</li>
+            </ul>
+          </div>
+        </div>
+        <div class="feature-card" data-card="analysis">
+          <div class="feature-icon"><i data-lucide="activity"></i></div>
+          <div class="feature-body">
+            <h3>🎯 音准分析</h3>
+            <p>录制完成后，AI 自动分析你的演唱音准，生成可视化音准曲线和评分报告。帮助你发现问题，提升演唱水平。</p>
+            <ul>
+              <li>实时音高检测（使用 Web Audio API）</li>
+              <li>可视化音准曲线显示</li>
+              <li>AI 评分与改进建议</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="workflow">
+    <nav class="stepper" aria-label="流程进度">
+      <ol>
+        <li class="step active" data-step="1"><span>1</span><div><b>上传歌曲</b><small>分离人声与伴奏</small></div></li>
+        <li class="step" data-step="2"><span>2</span><div><b>智能降调</b><small>推荐适配音域</small></div></li>
+        <li class="step" data-step="3"><span>3</span><div><b>在线录音</b><small>单人 / 合唱</small></div></li>
+        <li class="step" data-step="4"><span>4</span><div><b>一键导出</b><small>音频 / 视频字幕</small></div></li>
+      </ol>
+    </nav>
+
+    <!-- Step 1: Upload + Demucs -->
+    <section class="panel panel-upload" data-panel="1">
+      <div class="panel-head">
+        <h2><i data-lucide="music-2"></i> 歌曲上传 &amp; 伴奏分离</h2>
+        <p class="hint">上传偶像新歌 MP3，系统基于 <b>Demucs 开源人声分离</b> 实时生成纯伴奏。Demo 已内置测试歌曲，可直接选用。</p>
+      </div>
+
+      <div class="upload-area" id="dropzone">
+        <i data-lucide="upload-cloud" class="big-icon"></i>
+        <h3>拖拽歌曲到此处，或点击选择文件</h3>
+        <p class="hint">支持 MP3 / WAV / OGG · 建议 3-5 分钟以内用于 Demo 演示</p>
+        <input type="file" id="fileInput" accept="audio/*" hidden />
+        <button class="btn btn-primary" id="chooseFileBtn"><i data-lucide="file-plus"></i> 选择文件</button>
+      </div>
+
+      <div class="preset-row">
+        <div class="preset-label">🧪 本地预置测试歌曲（离线演示）：</div>
+        <div class="preset-grid" id="presetGrid"></div>
+      </div>
+
+      <div class="song-info hidden" id="songInfo">
+        <div class="song-meta">
+          <h3 id="songTitle">—</h3>
+          <div class="meta-row">
+            <span id="songSize">—</span>
+            <span id="songDuration">—</span>
+            <span id="songStatus" class="badge badge-neutral">待分离</span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress" id="separateProgress"><div class="bar" id="separateBar"></div></div>
+            <div class="progress-text" id="separateText">就绪</div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-pink" id="separateBtn" disabled><i data-lucide="wand-2"></i> 启动 AI 分离人声 / 伴奏</button>
+            <button class="btn btn-outline sm" id="openApiSettings" title="AI 服务设置"><i data-lucide="settings-2"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="track-previews hidden" id="trackPreviews">
+        <div class="track-card">
+          <div class="track-head"><span class="dot dot-violet"></span><h4>分离伴奏轨</h4><span class="badge badge-cyan">Instrumental</span></div>
+          <audio controls id="playerK"></audio>
+          <div class="track-footer"><span id="kDuration">—</span></div>
+        </div>
+        <div class="track-card">
+          <div class="track-head"><span class="dot dot-pink"></span><h4>分离人声轨</h4><span class="badge badge-pink">Vocal Only</span></div>
+          <audio controls id="playerV"></audio>
+          <div class="track-footer"><span id="vDuration">—</span></div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <button class="btn btn-ghost" id="toStep2" disabled>下一步：智能降调 <i data-lucide="arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Step 2: Pitch Shift -->
+    <section class="panel panel-pitch hidden" data-panel="2">
+      <div class="panel-head">
+        <h2><i data-lucide="sliders-horizontal"></i> AI 智能降调 / 变调</h2>
+        <p class="hint">选择"你的声音"与"原唱声音"，系统基于常见音域自动推荐最舒适的半音数。使用 <b>SoundTouchJS</b> 实现实时变速变调。</p>
+      </div>
+
+      <div class="gender-row">
+        <div class="gender-block">
+          <label>🎧 我的声音</label>
+          <div class="chip-group" id="myVoiceGroup">
+            <button class="chip active" data-voice="female-high">女声（偏高）</button>
+            <button class="chip" data-voice="female-mid">女声（普通）</button>
+            <button class="chip" data-voice="male-high">男声（偏高）</button>
+            <button class="chip" data-voice="male-low">男声（偏低）</button>
+          </div>
+        </div>
+        <div class="gender-block">
+          <label>🎤 原唱声音</label>
+          <div class="chip-group" id="origVoiceGroup">
+            <button class="chip" data-voice="male-group">男偶像 / 男团</button>
+            <button class="chip active" data-voice="female-group">女偶像 / 女团</button>
+            <button class="chip" data-voice="male-solo">男独唱</button>
+            <button class="chip" data-voice="female-solo">女独唱</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="recommend-card">
+        <div class="rec-left">
+          <span class="rec-tag">AI 推荐</span>
+          <div>
+            <div class="rec-value"><span id="recommendedSemitones">-4</span> 半音</div>
+            <div class="rec-note" id="recommendedNote">女声唱男团歌通常推荐降 4-6 个半音，避免副歌破音。</div>
+          </div>
+        </div>
+        <div class="rec-right">
+          <button class="btn btn-primary sm" id="applyRecBtn"><i data-lucide="sparkles"></i> 应用推荐</button>
+        </div>
+      </div>
+
+      <div class="pitch-control">
+        <div class="pitch-header">
+          <span>手动调节</span>
+          <span class="pitch-value"><b id="semitoneDisplay">0</b> 半音</span>
+        </div>
+        <input type="range" id="pitchSlider" min="-12" max="12" step="1" value="0" />
+        <div class="pitch-ticks">
+          <span>-12</span><span>-8</span><span>-4</span><span>0</span><span>+4</span><span>+8</span><span>+12</span>
+        </div>
+      </div>
+
+      <div class="player-box">
+        <div class="player-box-head">
+          <h4><i data-lucide="headphones"></i> 实时变调预览（伴奏）</h4>
+          <div class="player-state" id="playerState">就绪</div>
+        </div>
+        <div class="player-controls">
+          <button class="btn btn-round btn-play" id="playPitchBtn" title="播放"><i data-lucide="play"></i></button>
+          <button class="btn btn-round" id="stopPitchBtn" title="停止"><i data-lucide="square"></i></button>
+          <div class="wave-box"><canvas id="waveCanvas" height="64"></canvas></div>
+          <div class="volume">
+            <i data-lucide="volume-2"></i>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.9" />
+          </div>
+        </div>
+        <div class="time-row">
+          <span id="timeCur">00:00</span>
+          <div class="time-bar"><div class="time-fill" id="timeFill"></div></div>
+          <span id="timeDur">00:00</span>
+        </div>
+      </div>
+
+      <div class="next-step two-col">
+        <button class="btn btn-ghost" id="backTo1"><i data-lucide="arrow-left"></i> 返回上一步</button>
+        <button class="btn btn-primary" id="toStep3"><i data-lucide="mic"></i> 下一步：在线录音</button>
+      </div>
+    </section>
+
+    <!-- Step 3: Record + Chorus -->
+    <section class="panel panel-record hidden" data-panel="3">
+      <div class="panel-head">
+        <h2><i data-lucide="mic-2"></i> 在线录音 &amp; 粉丝合唱拼接</h2>
+        <p class="hint">单人：戴着耳机听伴奏同步录制人声，系统自动混音。合唱：先录者生成"参考音轨"，其他人跟着参考音轨录制，自动叠加混音。</p>
+      </div>
+
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="solo"><i data-lucide="user"></i> 单人模式</button>
+        <button class="mode-tab" data-mode="chorus"><i data-lucide="users"></i> 合唱模式（跟唱）</button>
+      </div>
+
+      <div class="rec-setup">
+        <div class="setup-item">
+          <label>🎤 麦克风</label>
+          <select id="micSelect"><option>默认麦克风</option></select>
+        </div>
+        <div class="setup-item">
+          <label>🎧 监听伴奏音量</label>
+          <input type="range" id="monitorVol" min="0" max="1" step="0.05" value="0.7" />
+        </div>
+        <div class="setup-item">
+          <label>✨ 人声音量（混音时）</label>
+          <input type="range" id="voiceVol" min="0" max="1.5" step="0.05" value="1.0" />
+        </div>
+        <div class="setup-item">
+          <label>🎙 伴奏音量（混音时）</label>
+          <input type="range" id="bgVol" min="0" max="1.5" step="0.05" value="0.85" />
+        </div>
+      </div>
+
+      <div class="chorus-area hidden" id="chorusArea">
+        <div class="chorus-head">
+          <h4><i data-lucide="layers"></i> 合唱轨管理</h4>
+          <button class="btn btn-outline sm" id="addChorusBtn"><i data-lucide="user-plus"></i> 新增合唱成员轨</button>
+        </div>
+        <div class="chorus-tracks" id="chorusTracks"></div>
+        <p class="hint">流程：第一位成员完成录音 → 生成参考音轨 → 其他成员点击"跟参考音轨录" → 系统自动叠加所有轨。</p>
+      </div>
+
+      <div class="recorder-box">
+        <div class="recorder-top">
+          <div class="big-rec-btn" id="recBtn" title="开始录音">
+            <i data-lucide="mic"></i>
+            <span id="recLabel">开始录音</span>
+          </div>
+          <div class="rec-meta">
+            <div class="timer" id="recTimer">00:00</div>
+            <div class="rec-state" id="recState">待开始</div>
+            <canvas id="recCanvas" width="420" height="80"></canvas>
+          </div>
+        </div>
+        <div class="countdown hidden" id="countdown">3</div>
+      </div>
+
+      <div class="voice-preview hidden" id="voicePreview">
+        <h4><i data-lucide="check-circle-2"></i> 本次人声录制（可重新录）</h4>
+        <div class="voice-wave">
+          <canvas id="voiceWaveCanvas" width="400" height="60"></canvas>
+        </div>
+        <audio controls id="playerVoice">
+        <div class="preview-actions">
+          <button class="btn btn-outline" id="retryBtn"><i data-lucide="refresh-ccw"></i> 重录</button>
+          <button class="btn btn-primary" id="commitBtn" data-mode="solo"><i data-lucide="check"></i> 确认加入最终混音</button>
+        </div>
+      </div>
+
+      <!-- AI 音准分析 -->
+      <div class="analysis-box hidden" id="analysisBox">
+        <div class="analysis-head">
+          <h4><i data-lucide="activity"></i> AI 音准分析报告</h4>
+          <div class="analysis-score" id="analysisScore">--</div>
+        </div>
+        <canvas id="analysisCanvas" width="600" height="150"></canvas>
+        <div class="analysis-stats">
+          <div class="stat-item">
+            <span class="stat-label">平均音准偏差</span>
+            <span class="stat-value" id="avgDeviation">--</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">最高音</span>
+            <span class="stat-value" id="maxPitch">--</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">最低音</span>
+            <span class="stat-value" id="minPitch">--</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">节奏稳定性</span>
+            <span class="stat-value" id="rhythmScore">--</span>
+          </div>
+        </div>
+        <div class="analysis-tips" id="analysisTips"></div>
+      </div>
+
+      <div class="final-mix hidden" id="finalMix">
+        <h4><i data-lucide="disc-3"></i> 最终混音预览</h4>
+        <audio controls id="playerMix"></audio>
+      </div>
+
+      <div class="next-step two-col">
+        <button class="btn btn-ghost" id="backTo2"><i data-lucide="arrow-left"></i> 返回上一步</button>
+        <button class="btn btn-primary" id="toStep4" disabled><i data-lucide="download"></i> 下一步：导出作品 <i data-lucide="arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Step 4: Export -->
+    <section class="panel panel-export hidden" data-panel="4">
+      <div class="panel-head">
+        <h2><i data-lucide="share-2"></i> 一键导出作品 · 分享到粉丝群</h2>
+        <p class="hint">可导出音频 WAV / MP3，WAV 无损适合二次剪辑，MP3 文件更小适合分享。</p>
+      </div>
+
+      <div class="export-grid">
+        <div class="export-card">
+          <div class="export-icon pink"><i data-lucide="music"></i></div>
+          <h4>音频 · WAV</h4>
+          <p class="hint">无损音频 · 适合二次剪辑 / 发 B站 长音频</p>
+          <button class="btn btn-pink w-full" id="exportWav"><i data-lucide="download"></i> 导出 WAV</button>
+        </div>
+        <div class="export-card">
+          <div class="export-icon violet"><i data-lucide="audio-lines"></i></div>
+          <h4>音频 · MP3</h4>
+          <p class="hint">文件更小 · 朋友圈 / 微信群分享</p>
+          <button class="btn btn-violet w-full" id="exportMp3"><i data-lucide="download"></i> 导出 MP3</button>
+        </div>
+      </div>
+
+      <div class="lyric-box">
+        <div class="lyric-head">
+          <h4><i data-lucide="align-left"></i> 音频分析字幕</h4>
+          <button class="btn btn-outline sm" id="toggleLyricEdit"><i data-lucide="pencil"></i> 编辑</button>
+        </div>
+        <p class="hint">根据原始音频时长自动生成的歌词字幕，可用于配合音频播放显示</p>
+        <textarea id="lyricText" rows="8" disabled></textarea>
+      </div>
+
+      <!-- API设置面板 -->
+      <div class="api-settings hidden" id="apiSettings">
+        <div class="api-settings-header">
+          <h4><i data-lucide="cloud"></i> AI 分离服务设置</h4>
+          <button class="btn btn-ghost sm" id="closeApiSettings"><i data-lucide="x"></i></button>
+        </div>
+        <div class="api-settings-content">
+          <p class="api-info">使用云端AI服务可以获得更专业的人声分离效果。推荐使用 LALAL.AI（免费试用10分钟/天）。</p>
+          <div class="form-group">
+            <label>API 服务提供商</label>
+            <select id="apiProvider" class="form-control">
+              <option value="local">本地算法（免费）</option>
+              <option value="lalalai">LALAL.AI（推荐）</option>
+              <option value="moises">Moises.ai</option>
+            </select>
+          </div>
+          <div class="form-group" id="apiKeyGroup">
+            <label>API Key（可选，不填则使用本地算法）</label>
+            <input type="password" id="apiKey" class="form-control" placeholder="输入 API Key 或留空使用本地算法">
+          </div>
+          <div class="form-group">
+            <label>分离模式</label>
+            <select id="separationMode" class="form-control">
+              <option value="vocals">人声 & 伴奏（2轨）</option>
+              <option value="all">完整分离（鼓/贝斯/钢琴/人声/其他）</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="saveApiSettings"><i data-lucide="save"></i> 保存设置</button>
+          <p class="api-tip">💡 保存后，下次分离将自动使用云端AI服务</p>
+        </div>
+      </div>
+
+      <div class="next-step two-col">
+        <button class="btn btn-ghost" id="backTo3"><i data-lucide="arrow-left"></i> 返回</button>
+        <button class="btn btn-ghost" id="restartBtn"><i data-lucide="rotate-ccw"></i> 从头再来</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>IdolCover Studio Demo · 本演示基于浏览器原生 Web Audio API 与 MediaRecorder，人声分离通过前端算法（谱减法 + 中置通道提取）模拟 Demucs 效果，离线可用。</p>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
