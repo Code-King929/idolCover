@@ -183,39 +183,58 @@
   ];
 
   // ---------- 全局加载遮罩 - 可爱生动版 ----------
-  // 有趣的加载提示语
-  const LOADING_TIPS = [
-    "🎵 正在召唤音乐精灵...",
-    "🎤 麦克风正在热身中...",
-    "✨ 为你的歌声准备舞台...",
-    "🌟 调音师正在调试设备...",
-    "💫 音乐魔法正在施展...",
-    "🎶 音符们正在排队入场...",
-    "🎹 伴奏正在化妆打扮...",
-    "🌈 彩虹音效正在加载...",
-    "🎵 请稍等，音乐马上开始...",
-    "🎤 准备好你的嗓子了吗？"
+  // 场景1：歌曲加载提示语
+  const SONG_LOADING_TIPS = [
+    { text: "🎵 正在召唤音乐精灵...", emoji: "🎵" },
+    { text: "🎤 麦克风正在热身中...", emoji: "🎤" },
+    { text: "✨ 为你的歌声准备舞台...", emoji: "✨" },
+    { text: "🌟 调音师正在调试设备...", emoji: "🌟" },
+    { text: "💫 音乐魔法正在施展...", emoji: "💫" },
+    { text: "🎶 音符们正在排队入场...", emoji: "🎶" },
+    { text: "🎹 伴奏正在化妆打扮...", emoji: "🎹" },
+    { text: "🌈 彩虹音效正在加载...", emoji: "🌈" },
+    { text: "🎵 请稍等，音乐马上开始...", emoji: "🎵" },
+    { text: "🎤 准备好你的嗓子了吗？", emoji: "🎤" }
+  ];
+
+  // 场景2：AI分离提示语
+  const AI_LOADING_TIPS = [
+    { text: "🧠 AI 正在集中精神...", emoji: "🧠" },
+    { text: "🔮 魔法分离正在进行...", emoji: "🔮" },
+    { text: "✨ 声波正在分析中...", emoji: "✨" },
+    { text: "🎧 人声和伴奏正在分离...", emoji: "🎧" },
+    { text: "🎵 音乐元素正在重组...", emoji: "🎵" },
+    { text: "💫 人工智能正在发力...", emoji: "💫" },
+    { text: "🎹 乐器轨道正在提取...", emoji: "🎹" },
+    { text: "🎤 人声音轨正在净化...", emoji: "🎤" },
+    { text: "🧪 音频炼金术正在施展...", emoji: "🧪" },
+    { text: "✨ 马上就要完成啦！", emoji: "✨" }
   ];
 
   let currentTipIndex = 0;
   let tipInterval = null;
+  let stageInterval = null;
+  let currentStage = 1;
 
-  function showLoading(text, subtext) {
+  function showLoading(text, subtext, scene = "song") {
     let overlay = $("globalLoading");
     if (!overlay) {
       overlay = document.createElement("div");
       overlay.id = "globalLoading";
       overlay.className = "global-loading";
       overlay.innerHTML = '<div class="loading-content">' +
-        '<div class="loading-music-icon">' +
-          '<div class="loading-notes">' +
-            '<span class="loading-note">♪</span>' +
-            '<span class="loading-note">♫</span>' +
-            '<span class="loading-note">♬</span>' +
-            '<span class="loading-note">♩</span>' +
-            '<span class="loading-note">♪</span>' +
+        '<div class="loading-bg-particles"></div>' +
+        '<div class="loading-animation-container" id="loadingAnimation">' +
+          '<div class="loading-stage-1">' +
+            '<div class="loading-notes">' +
+              '<span class="loading-note">♪</span>' +
+              '<span class="loading-note">♫</span>' +
+              '<span class="loading-note">♬</span>' +
+              '<span class="loading-note">♩</span>' +
+              '<span class="loading-note">♪</span>' +
+            '</div>' +
+            '<span class="loading-mic">🎤</span>' +
           '</div>' +
-          '<span class="loading-mic">🎤</span>' +
         '</div>' +
         '<div class="loading-text" id="loadingText"><span class="loading-emoji">✨</span> 加载中…</div>' +
         '<div class="loading-subtext" id="loadingSubtext"></div>' +
@@ -224,6 +243,9 @@
       '</div>';
       document.body.appendChild(overlay);
     }
+    
+    // 设置场景
+    overlay.dataset.scene = scene;
     
     // 更新文字
     const textEl = $("loadingText");
@@ -238,22 +260,52 @@
     
     $("loadingBar").style.width = "0%";
     
-    // 启动提示语轮播
+    // 启动提示语轮播（5秒切换）
     if (tipInterval) clearInterval(tipInterval);
-    currentTipIndex = Math.floor(Math.random() * LOADING_TIPS.length);
-    updateTip();
-    tipInterval = setInterval(updateTip, 3000);
+    currentTipIndex = Math.floor(Math.random() * (scene === "song" ? SONG_LOADING_TIPS.length : AI_LOADING_TIPS.length));
+    updateTip(scene);
+    tipInterval = setInterval(() => updateTip(scene), 5000);
+    
+    // 启动动画阶段切换（5秒切换）
+    if (stageInterval) clearInterval(stageInterval);
+    currentStage = 1;
+    updateStage();
+    stageInterval = setInterval(updateStage, 5000);
     
     overlay.classList.add("active");
     document.body.classList.add("loading-active");
   }
 
-  function updateTip() {
+  function updateTip(scene) {
+    const tips = scene === "song" ? SONG_LOADING_TIPS : AI_LOADING_TIPS;
     const tipEl = $("loadingTip");
+    const textEl = $("loadingText");
+    
     if (tipEl) {
-      tipEl.textContent = LOADING_TIPS[currentTipIndex];
-      currentTipIndex = (currentTipIndex + 1) % LOADING_TIPS.length;
+      tipEl.textContent = tips[currentTipIndex].text;
     }
+    
+    if (textEl) {
+      textEl.innerHTML = '<span class="loading-emoji">' + tips[currentTipIndex].emoji + '</span> 加载中…';
+    }
+    
+    currentTipIndex = (currentTipIndex + 1) % tips.length;
+  }
+
+  function updateStage() {
+    const animationContainer = $("loadingAnimation");
+    if (!animationContainer) return;
+    
+    const stages = [
+      '<div class="loading-stage-1"><div class="loading-notes"><span class="loading-note">♪</span><span class="loading-note">♫</span><span class="loading-note">♬</span><span class="loading-note">♩</span><span class="loading-note">♪</span></div><span class="loading-mic">🎤</span></div>',
+      '<div class="loading-stage-2"><div class="loading-vinyl"></div><div class="loading-waves"><div class="loading-wave"></div><div class="loading-wave"></div><div class="loading-wave"></div><div class="loading-wave"></div><div class="loading-wave"></div></div></div>',
+      '<div class="loading-stage-3"><div class="loading-beats"><div class="loading-beat"></div><div class="loading-beat"></div><div class="loading-beat"></div><div class="loading-beat"></div><div class="loading-beat"></div><div class="loading-beat"></div><div class="loading-beat"></div></div></div>',
+      '<div class="loading-stage-4"><div class="loading-magic"></div><div class="loading-sparkles"><span class="loading-sparkle">✨</span><span class="loading-sparkle">✨</span><span class="loading-sparkle">✨</span><span class="loading-sparkle">✨</span></div></div>',
+      '<div class="loading-stage-5"><div class="loading-stars"><span class="loading-star">⭐</span><span class="loading-star">⭐</span><span class="loading-star">⭐</span><span class="loading-star">⭐</span><span class="loading-center-star">⭐</span></div></div>'
+    ];
+    
+    animationContainer.innerHTML = stages[currentStage - 1];
+    currentStage = (currentStage % 5) + 1;
   }
 
   function updateLoading(text, subtext, progress) {
@@ -278,10 +330,14 @@
     if (overlay) overlay.classList.remove("active");
     document.body.classList.remove("loading-active");
     
-    // 停止提示语轮播
+    // 停止所有定时器
     if (tipInterval) {
       clearInterval(tipInterval);
       tipInterval = null;
+    }
+    if (stageInterval) {
+      clearInterval(stageInterval);
+      stageInterval = null;
     }
   }
 
@@ -459,8 +515,8 @@
     $("separateBtn").disabled = true;
     $("songStatus").textContent = "分离中…"; $("songStatus").className = "badge badge-yellow";
     
-    // 显示全局加载遮罩
-    showLoading("正在启动 AI 分离引擎", "请稍候...");
+    // 显示全局加载遮罩 - 使用AI场景
+    showLoading("正在启动 AI 分离引擎", "请稍候...", "ai");
     updateLoading("正在启动 AI 分离引擎", "请稍候...", 5);
     
     let karaoke, vocal;
