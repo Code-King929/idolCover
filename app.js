@@ -175,10 +175,10 @@
 
   // ---------- 本地预置：真实歌曲文件 ----------
   const PRESETS = [
-    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "audio/Excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
-    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "audio/漂洋过海来看你.mp3", hint: "男中音独唱，建议女声降调" },
-    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "audio/唐人.mp3", hint: "古风女声，建议男声升调" },
-    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "audio/小幸运.mp3", hint: "清新女声，建议男声升 4-5 半音" },
+    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "audio/excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
+    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "audio/beyond_the_sea.mp3", hint: "男中音独唱，建议女声降调" },
+    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "audio/tang_people.mp3", hint: "古风女声，建议男声升调" },
+    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "audio/lucky_star.mp3", hint: "清新女声，建议男声升 4-5 半音" },
   ];
 
   // ---------- 全局加载遮罩 ----------
