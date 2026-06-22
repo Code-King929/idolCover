@@ -5,8 +5,9 @@
 ## ✨ 核心功能
 
 - 🎤 **一键翻唱**：上传歌曲或选择预置歌曲即可开始翻唱
-- 🎧 **AI 智能降调**：支持男声女声互转，推荐降调方向
-- 👥 **粉丝合唱**：多人录音叠加混音
+- 🎧 **AI 智能降调**：支持男声女声互转，自动推荐最佳降调幅度
+- 🎵 **人声分离**：基于谱减法 + 中置通道提取的前端算法，分离人声与伴奏
+- 👥 **粉丝合唱**：多人录音叠加混音，支持参考音轨模式
 - 🎯 **AI 音准分析**：录制完成后自动生成音准评分和改进建议
 - 💾 **一键导出**：支持 WAV / MP3 格式导出
 
@@ -14,23 +15,25 @@
 
 - **Web Audio API**：音频处理、实时变调、录音
 - **MediaRecorder**：浏览器原生录音
-- **ONNX Runtime Web**：可选的 AI 推理（Demucs 人声分离）
+- **OfflineAudioContext**：人声分离算法
+- **Phase Vocoder**：粒状变调算法
 - **LameJS**：MP3 编码
-- **Canvas**：波形可视化
-- **纯前端**：HTML + CSS + JavaScript
+- **Canvas**：波形可视化、音准曲线绘制
+- **纯前端**：HTML + CSS + JavaScript，离线可用
 
 ## 📁 项目结构
 
 ```
-idolcover-studio/
+idolCover/
 ├── index.html          # 主页面
-├── app.js              # 核心逻辑
-├── styles.css          # 样式
-└── audio/              # 预置歌曲
-    ├── Excitant.mp3
-    ├── 漂洋过海来看你.mp3
-    ├── 唐人.mp3
-    └── 小幸运.mp3
+├── app.js              # 核心逻辑（音频处理、录音、混音）
+├── styles.css          # 样式（蓝色清爽风格）
+├── audio-data.js       # 音频数据加载模块
+└── audio/              # 预置歌曲（Base64 格式）
+    ├── excitant_base64.txt
+    ├── beyond_the_sea_base64.txt
+    ├── tang_people_base64.txt
+    └── lucky_star_base64.txt
 ```
 
 ## 🚀 本地运行
@@ -52,7 +55,18 @@ php -S localhost:8080
 
 ## 🌐 在线预览
 
-通过 GitHub Pages 部署后访问：[在线链接](https://你的用户名.github.io/idolcover-studio/)
+GitHub Pages 部署：[https://code-king929.github.io/idolCover/](https://code-king929.github.io/idolCover/)
+
+> ⚠️ 首次加载可能较慢（预置歌曲使用 Base64 格式），加载完成后浏览器会自动缓存。
+
+## 🎯 比赛评分维度
+
+| 维度 | 实现内容 |
+|------|----------|
+| **创新性** | 前端人声分离算法、实时变调预览、AI 音准分析 |
+| **实用性** | 一站式翻唱流程、支持合唱拼接、多格式导出 |
+| **完成度** | 四步流程完整实现、交互体验优化 |
+| **美观度** | 蓝色清爽风格、玻璃拟态设计、响应式布局 |
 
 ## 📝 许可证
 
