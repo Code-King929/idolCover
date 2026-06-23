@@ -42,13 +42,10 @@ idolCover/
 ├── index.html          # 主页面（四步流程界面）
 ├── app.js              # 核心逻辑（音频处理、录音、混音）
 ├── styles.css          # 样式（蓝色清爽风格 + 可爱加载动画）
-├── audio-data.js       # 音频数据加载模块
-└── audio/              # 预置歌曲（Base64 格式）
-    ├── excitant_base64.txt
-    ├── beyond_the_sea_base64.txt
-    ├── tang_people_base64.txt
-    └── lucky_star_base64.txt
+└── README.md           # 项目文档
 ```
+
+> 🎵 预置歌曲存储在阿里云 OSS，国内访问速度快，加载秒开。
 
 ---
 
@@ -75,7 +72,7 @@ php -S localhost:8080
 
 GitHub Pages 部署：[https://code-king929.github.io/idolCover/](https://code-king929.github.io/idolCover/)
 
-> ⚠️ 首次加载可能较慢（预置歌曲使用 Base64 格式），加载完成后浏览器会自动缓存。
+> ✅ 预置歌曲使用阿里云 OSS 存储，国内访问秒开！
 
 ---
 
