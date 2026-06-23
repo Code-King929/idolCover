@@ -174,12 +174,12 @@
   }
 
   // ---------- 本地预置：真实歌曲文件 ----------
-  // 使用本地 Base64 数据，完全不依赖网络
+  // 使用阿里云 OSS 存储，国内访问速度快
   const PRESETS = [
-    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "audio/excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
-    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "audio/beyond_the_sea.mp3", hint: "男中音独唱，建议女声降调" },
-    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "audio/tang_people.mp3", hint: "古风女声，建议男声升调" },
-    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "audio/lucky_star.mp3", hint: "清新女声，建议男声升 4-5 半音" },
+    { key: "male-group", title: "Excitant", artist: "庞鹏洋", file: "https://huixing1223.oss-cn-beijing.aliyuncs.com/audio/Excitant.mp3", hint: "男团风，建议女声降 4-6 半音" },
+    { key: "male-solo", title: "漂洋过海来看你", artist: "周深", file: "https://huixing1223.oss-cn-beijing.aliyuncs.com/audio/%E6%BC%82%E6%B4%8B%E8%BF%87%E6%B5%B7%E6%9D%A5%E7%9C%8B%E4%BD%A0.mp3", hint: "男中音独唱，建议女声降调" },
+    { key: "female-solo", title: "唐人", artist: "董沐曦", file: "https://huixing1223.oss-cn-beijing.aliyuncs.com/audio/%E5%94%90%E4%BA%BA.mp3", hint: "古风女声，建议男声升调" },
+    { key: "female-group", title: "小幸运", artist: "桃子鱼仔的Ukulele", file: "https://huixing1223.oss-cn-beijing.aliyuncs.com/audio/%E5%B0%B8%E5%B9%B8%E8%BF%90.mp3", hint: "清新女声，建议男声升 4-5 半音" },
   ];
 
   // ---------- 全局加载遮罩 - 可爱生动版 ----------
