@@ -100,6 +100,84 @@
     </div>
   </header>
 
+  <!-- 产品价值主张区 -->
+  <section class="value-section">
+    <div class="value-inner">
+      <div class="value-head">
+        <span class="value-tag">💡 为什么选择 IdolCover</span>
+        <h2>专为追星族打造的一站式翻唱工具</h2>
+        <p class="value-desc">不用再全网找伴奏、不用下载专业软件、不用学复杂剪辑<br/>打开浏览器，3 分钟完成一首属于你的翻唱作品</p>
+      </div>
+      <div class="value-points">
+        <div class="value-point">
+          <div class="value-icon">🎵</div>
+          <h4>不用找伴奏</h4>
+          <p>AI 自动从原曲中分离人声与伴奏，新歌发布当天就能翻唱</p>
+        </div>
+        <div class="value-point">
+          <div class="value-icon">🎤</div>
+          <h4>不用担心破音</h4>
+          <p>AI 智能推荐降调幅度，男女声互转一键搞定，唱得上去才是硬道理</p>
+        </div>
+        <div class="value-point">
+          <div class="value-icon">👥</div>
+          <h4>合唱不再难</h4>
+          <p>粉丝应援、生日祝福、出道纪念，多人合唱轻松搞定，自动对齐混音</p>
+        </div>
+        <div class="value-point">
+          <div class="value-icon">🎯</div>
+          <h4>越唱越好听</h4>
+          <p>AI 音准分析告诉你哪里唱不准，可视化曲线 + 改进建议，进步看得见</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用场景区 -->
+  <section class="scene-section">
+    <div class="scene-inner">
+      <div class="scene-head">
+        <span class="scene-tag">🌟 真实使用场景</span>
+        <h2>这些时刻，都需要 IdolCover</h2>
+      </div>
+      <div class="scene-cards">
+        <div class="scene-card">
+          <div class="scene-emoji">🎉</div>
+          <h4>偶像生日应援</h4>
+          <p>生日当天，和粉丝群小伙伴一起录一首偶像的歌，送上最特别的祝福</p>
+        </div>
+        <div class="scene-card">
+          <div class="scene-emoji">🎶</div>
+          <h4>新歌翻唱挑战</h4>
+          <p>偶像刚发新歌？第一时间翻唱发布，抢占热搜，展现你的翻唱实力</p>
+        </div>
+        <div class="scene-card">
+          <div class="scene-emoji">💝</div>
+          <h4>纪念日礼物</h4>
+          <p>出道纪念日、回归纪念日，唱一首偶像的歌送给TA，也送给自己</p>
+        </div>
+        <div class="scene-card">
+          <div class="scene-emoji">🏆</div>
+          <h4>翻唱比赛</h4>
+          <p>参加翻唱比赛？专业级音准分析帮你找到不足，快速提升演唱水平</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 快速体验入口 -->
+  <section class="quick-start">
+    <div class="quick-inner">
+      <div class="quick-content">
+        <h2>🚀 立即开始你的第一首翻唱</h2>
+        <p>选择下方预置歌曲，无需上传，即刻体验完整翻唱流程</p>
+        <button class="btn btn-primary btn-lg" id="quickStartBtn">
+          <i data-lucide="play-circle"></i> 立即体验 · 选择预置歌曲
+        </button>
+      </div>
+    </div>
+  </section>
+
   <main class="workflow">
     <nav class="stepper" aria-label="流程进度">
       <ol>
@@ -422,8 +500,31 @@
     </section>
   </main>
 
+  <!-- 底部区域 -->
   <footer class="foot">
-    <p>IdolCover Studio Demo · 本演示基于浏览器原生 Web Audio API 与 MediaRecorder，人声分离通过前端算法（谱减法 + 中置通道提取）模拟 Demucs 效果，离线可用。</p>
+    <div class="foot-inner">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <div class="foot-logo">♪</div>
+          <div>
+            <h3>IdolCover Studio</h3>
+            <p>偶像新歌翻唱助手 · 一站式翻唱解决方案</p>
+          </div>
+        </div>
+        <div class="foot-tech">
+          <span class="foot-tech-label">技术栈：</span>
+          <span class="tech-tag">Web Audio API</span>
+          <span class="tech-tag">MediaRecorder</span>
+          <span class="tech-tag">Phase Vocoder</span>
+          <span class="tech-tag">Canvas</span>
+          <span class="tech-tag">OfflineAudioContext</span>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <p>本演示基于浏览器原生 Web Audio API 与 MediaRecorder，人声分离通过前端算法（谱减法 + 中置通道提取）实现，无需后端服务器。</p>
+        <p class="foot-powered">💻 基于 TRAE IDE · AI 辅助开发</p>
+      </div>
+    </div>
   </footer>
 
   <div class="toast" id="toast"></div>

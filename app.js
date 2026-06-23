@@ -1776,6 +1776,23 @@
     });
   })();
 
+  // 快速体验按钮 - 滚动到预置歌曲区域
+  const quickStartBtn = $("quickStartBtn");
+  if (quickStartBtn) {
+    quickStartBtn.addEventListener("click", () => {
+      const presetGrid = $("presetGrid");
+      if (presetGrid) {
+        presetGrid.scrollIntoView({ behavior: "smooth", block: "center" });
+        // 高亮动画
+        presetGrid.style.transition = "box-shadow 0.3s ease";
+        presetGrid.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.5)";
+        setTimeout(() => {
+          presetGrid.style.boxShadow = "none";
+        }, 1500);
+      }
+    });
+  }
+
   // 初始化图标
   if (window.lucide) window.lucide.createIcons();
 
