@@ -368,19 +368,14 @@
           updateLoading("正在读取音频数据", p.title, 30);
           await new Promise(r => setTimeout(r, 200));
 
-          // 使用 Base64 数据加载音频（完全不依赖网络）
-          const base64Data = await loadAudioData(p.key);
-          updateLoading("正在解码音频", p.title, 60);
-
-          // 将 Base64 转换为 ArrayBuffer
-          const binaryString = atob(base64Data);
-          const len = binaryString.length;
-          const bytes = new Uint8Array(len);
-          for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+          // 使用 fetch 从阿里云 OSS 加载音频
+          const response = await fetch(p.file);
+          if (!response.ok) {
+            throw new Error("文件下载失败，状态码: " + response.status);
           }
-          const ab = bytes.buffer;
-
+          updateLoading("正在解码音频", p.title, 60);
+          const ab = await response.arrayBuffer();
+          
           updateLoading("正在解码音频", p.title, 80);
           await new Promise(r => setTimeout(r, 200));
 
